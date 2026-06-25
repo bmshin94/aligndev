@@ -34,26 +34,27 @@ function spaFeatureTree(lang: string) {
 	const x = lang === "typescript" ? "ts" : "js";
 	const xt = lang === "typescript" ? "tsx" : "jsx";
 	return `src/
-├── assets/
-│   ├── images/
-│   └── fonts/
-├── components/
-│   ├── ui/                  # Atomic components
-│   └── common/              # Shared business components
 ├── features/                # Self-contained feature modules
 │   ├── auth/
 │   │   ├── components/
 │   │   ├── hooks/
 │   │   ├── api.${x}
+│   │   ├── types.${x}
 │   │   └── index.${x}
-│   └── users/
-│       ├── components/
-│       └── index.${x}
-├── hooks/                   # Global hooks
-├── lib/                     # Utility helpers
-├── stores/                  # Global state
-├── App.${xt}
-└── main.${xt}`;
+│   ├── dashboard/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── index.${x}
+│   └── user-profile/
+├── shared/                  # Cross-feature shared code
+│   ├── components/
+│   ├── hooks/
+│   ├── utils/
+│   └── types/
+├── app/                     # App-level config
+│   ├── router.${xt}
+│   └── store.${x}
+└── App.${xt}`;
 }
 
 function spaLayerTree(lang: string) {
@@ -160,16 +161,22 @@ pnpm-workspace.yaml`;
 }
 
 export function StepDirectory() {
-	const { dirPattern, dirDepth, language, setField } =
+	const { dirPattern, dirDepth, language, framework, setField } =
 		useWizardStore();
 
 	const isMonorepo = dirPattern === "monorepo";
+	const isSSR = framework === "nextjs" || framework === "nuxt";
 
 	function getTree(): string {
 		if (dirPattern === "monorepo") return monorepoTree();
+		if (isSSR) {
+			return dirPattern === "feature-based"
+				? ssrFeatureTree(language)
+				: ssrLayerTree(language);
+		}
 		return dirPattern === "feature-based"
-			? ssrFeatureTree(language)
-			: ssrLayerTree(language);
+			? spaFeatureTree(language)
+			: spaLayerTree(language);
 	}
 
 	return (

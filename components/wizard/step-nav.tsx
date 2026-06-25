@@ -72,7 +72,7 @@ export function StepNav() {
 
       <div className="mt-auto space-y-3 pt-6 border-t">
         <a
-          href="https://github.com/razr001/align-dev"
+          href="https://github.com/razr001/aligndev"
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
